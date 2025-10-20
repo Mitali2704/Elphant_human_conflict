@@ -1,0 +1,17 @@
+# Paths to your dataset
+train: train/images       # training images
+val: train/images         # using train images as validation
+
+# Number of classes
+nc: 1
+
+# Class names
+names: ['Elephant']
+
+# Roboflow metadata (optional)
+roboflow:
+  workspace: test-6yqzl
+  project: elephant-mbw6v
+  version: 26
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/test-6yqzl/elephant-mbw6v/dataset/26
