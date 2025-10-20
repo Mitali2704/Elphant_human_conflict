@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Elephant Tracking Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+  <h2>🐘 Elephant Tracking Map</h2>
+  <div id="map" style="height: 500px;"></div>
+
+  <script>
+    var map = L.map('map').setView([20.315, 85.825], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18
+    }).addTo(map);
+
+    var markers = [];
+
+    async function fetchEvents() {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/get_events");
+        const events = await res.json();
+
+        // remove old markers
+        markers.forEach(m => map.removeLayer(m));
+        markers = [];
+
+        // add new markers
+        events.forEach(e => {
+          var marker = L.marker([e.latitude, e.longitude]).addTo(map)
+            .bindPopup(`<b>🐘 Elephant Detected!</b><br>
+                        Time: ${e.timestamp}<br>
+                        Confidence: ${(e.confidence * 100).toFixed(2)}%<br>
+                        Herd Size: ${e.herd_size}`);
+          markers.push(marker);
+        });
+      } catch (err) {
+        console.error("Error fetching events:", err);
+      }
+    }
+
+    setInterval(fetchEvents, 3000); // refresh every 3 seconds
+    fetchEvents(); // initial fetch
+  </script>
+</body>
+</html>
